@@ -1,9 +1,10 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { validationHandler } from './routehandlers/validationHandler.js';
 import { handlerReadiness } from './routehandlers/handlerReadiness.js';
 import { resetMetricsHandler } from './routehandlers/resetMetricsHandler.js';
-import { metricsHandler } from "./routehandlers/metricsHandler.js"
-import { config } from './config.js';
+import { metricsHandler } from './routehandlers/metricsHandler.js';
+import { middlewareLogResponses } from './middleware/middlewareLogResponses.js';
+import { middlewareMetricsInc } from './middleware/middlewareMetricsInc.js';
 
 const app = express();
 const PORT = 8080;
@@ -22,25 +23,3 @@ app.get('/api/healthz', handlerReadiness);
 app.get('/admin/metrics', metricsHandler);
 app.post('/admin/reset', resetMetricsHandler);
 app.post('/api/validate_chirp', validationHandler);
-
-function middlewareLogResponses(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  res.on('finish', () => {
-    if (res.statusCode !== 200) {
-      console.log(
-        `[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`
-      );
-    }
-  });
-  next();
-}
-
-function middlewareMetricsInc(req: Request, res: Response, next: NextFunction) {
-  config.fileserverHits++;
-  next();
-}
-
-
