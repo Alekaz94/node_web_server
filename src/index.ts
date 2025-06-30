@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { validationHandler } from './routehandlers/validationHandler.js';
 import { handlerReadiness } from './routehandlers/handlerReadiness.js';
 import { resetMetricsHandler } from './routehandlers/resetMetricsHandler.js';
@@ -22,4 +22,25 @@ app.listen(PORT, () => {
 app.get('/api/healthz', handlerReadiness);
 app.get('/admin/metrics', metricsHandler);
 app.post('/admin/reset', resetMetricsHandler);
-app.post('/api/validate_chirp', validationHandler);
+app.post(
+  '/api/validate_chirp',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      validationHandler(req, res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+app.use(errorHandlingMiddleware);
+
+function errorHandlingMiddleware(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  console.log(err);
+  res.status(500).json({ error: 'Something went wrong on our end' });
+}
