@@ -5,6 +5,7 @@ import { resetMetricsHandler } from './routehandlers/resetMetricsHandler.js';
 import { metricsHandler } from './routehandlers/metricsHandler.js';
 import { middlewareLogResponses } from './middleware/middlewareLogResponses.js';
 import { middlewareMetricsInc } from './middleware/middlewareMetricsInc.js';
+import { errorHandlingMiddleware } from './middleware/errorHandlingMiddleware.js';
 
 const app = express();
 const PORT = 8080;
@@ -13,10 +14,6 @@ const PORT = 8080;
 app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.use(express.json());
 app.use(middlewareLogResponses);
-
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}/app`);
-});
 
 //Routes
 app.get('/api/healthz', handlerReadiness);
@@ -35,12 +32,6 @@ app.post(
 
 app.use(errorHandlingMiddleware);
 
-function errorHandlingMiddleware(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  console.log(err);
-  res.status(500).json({ error: 'Something went wrong on our end' });
-}
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}/app`);
+});

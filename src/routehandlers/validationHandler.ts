@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { BadRequestError } from '../errorhandling/BadRequestError.js';
 
 export function validationHandler(req: Request, res: Response) {
   const chirp = req.body;
@@ -6,11 +7,11 @@ export function validationHandler(req: Request, res: Response) {
   const bannedWords = ['kerfuffle', 'sharbert', 'fornax'];
 
   if (typeof chirp !== 'object' || typeof chirp.body !== 'string') {
-    throw new Error('Something went wrong');
+    throw new BadRequestError('Something went wrong');
   }
 
   if (text.length >= 140) {
-    throw new Error('Chirp is too long');
+    throw new BadRequestError('Chirp is too long. Max length is 140');
   }
 
   const cleanedWords = text.split(' ').map((word: string) => {
