@@ -1,11 +1,11 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { validationHandler } from './routehandlers/validationHandler.js';
-import { handlerReadiness } from './routehandlers/handlerReadiness.js';
-import { resetMetricsHandler } from './routehandlers/resetMetricsHandler.js';
-import { metricsHandler } from './routehandlers/metricsHandler.js';
-import { middlewareLogResponses } from './middleware/middlewareLogResponses.js';
-import { middlewareMetricsInc } from './middleware/middlewareMetricsInc.js';
-import { errorHandlingMiddleware } from './middleware/errorHandlingMiddleware.js';
+import { validationHandler } from './api/routehandlers/validationHandler.js';
+import { handlerReadiness } from './api/routehandlers/handlerReadiness.js';
+import { resetMetricsHandler } from './api/routehandlers/resetMetricsHandler.js';
+import { metricsHandler } from './api/routehandlers/metricsHandler.js';
+import { middlewareLogResponses } from './api/middleware/middlewareLogResponses.js';
+import { middlewareMetricsInc } from './api/middleware/middlewareMetricsInc.js';
+import { errorHandlingMiddleware } from './api/middleware/errorHandlingMiddleware.js';
 
 const app = express();
 const PORT = 8080;

@@ -1,4 +1,4 @@
-.nvmrc
 node_modules
 /dist
 serverlog
+.env
