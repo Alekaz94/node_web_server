@@ -3,6 +3,7 @@ import { BadRequestError } from '../errorhandling/BadRequestError.js';
 import { ForbiddenError } from '../errorhandling/ForbiddenError.js';
 import { NotFoundError } from '../errorhandling/NotFoundError.js';
 import { UnauthorizedError } from '../errorhandling/UnauthorizedError.js';
+import { JSONResponseError } from '../jsonResponse.js';
 
 export const errorHandlingMiddleware: ErrorRequestHandler = (
   err: Error,
@@ -10,24 +11,26 @@ export const errorHandlingMiddleware: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ): void => {
+  let statusCode = 500;
+  let message = 'Something went wrong on our end';
+
   if (err instanceof BadRequestError) {
-    console.log(err);
-    res.status(400).send({ error: err.message });
-    return;
+    statusCode = 400;
+    message = err.message;
   } else if (err instanceof UnauthorizedError) {
-    console.log(err);
-    res.status(401).json({ error: err.message });
-    return;
+    statusCode = 401;
+    message = err.message;
   } else if (err instanceof ForbiddenError) {
-    console.log(err);
-    res.status(403).send({ error: err.message });
-    return;
+    statusCode = 403;
+    message = err.message;
   } else if (err instanceof NotFoundError) {
-    console.log(err);
-    res.status(404).send({ error: err.message });
-    return;
+    statusCode = 404;
+    message = err.message;
   }
 
-  console.log(err);
-  res.status(500).json({ error: 'Something went wrong on our end' });
+  if (statusCode >= 500) {
+    console.log(err.message);
+  }
+
+  JSONResponseError(res, statusCode, message);
 };
