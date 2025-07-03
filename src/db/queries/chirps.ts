@@ -8,8 +8,8 @@ export async function createChirp(chirp: NewChirp) {
 }
 
 export async function getAllChirps() {
-  const rows = await db.select().from(chirps).orderBy(asc(chirps.createdAt));
-  return rows;
+  const chirp = await db.select().from(chirps).orderBy(asc(chirps.createdAt));
+  return chirp;
 }
 
 export async function getChirpById(chirpId: string) {
