@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { BadRequestError } from '../errorhandling/BadRequestError.js';
 import { createUser } from '../../db/queries/users.js';
-import { hashPassword } from '../../auth.js';
+import { hashPassword } from '../authentication/auth.js';
 import { JSONResponse } from '../jsonResponse.js';
 import { NewUser } from '../../db/schema.js';
 

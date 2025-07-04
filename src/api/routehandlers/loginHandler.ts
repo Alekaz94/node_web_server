@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getUserByEmail } from '../../db/queries/users.js';
-import { checkPasswordHash } from '../../auth.js';
+import { checkPasswordHash } from '../authentication/auth.js';
 import { JSONResponse, JSONResponseError } from '../jsonResponse.js';
 import { UnauthorizedError } from '../errorhandling/UnauthorizedError.js';
 
