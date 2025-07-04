@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { JSONResponse, JSONResponseError } from '../jsonResponse.js';
 import { getAllChirps, getChirpById } from '../../db/queries/chirps.js';
-import { NotFoundError } from '../errorhandling/NotFoundError.js';
 
 export async function getAllChirpsHandler(req: Request, res: Response) {
   const chirps = await getAllChirps();

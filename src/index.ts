@@ -16,6 +16,8 @@ import {
   getChirpsByIdHandler,
 } from './api/routehandlers/getChirpsHandler.js';
 import { loginHandler } from './api/routehandlers/loginHandler.js';
+import { refreshHandler } from './api/routehandlers/refreshHandler.js';
+import { revokeHandler } from './api/routehandlers/revokeHandler.js';
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -47,6 +49,12 @@ app.get(`/api/chirps/:chirpID`, (req, res, next) => {
 });
 app.post('/api/login', (req, res, next) => {
   Promise.resolve(loginHandler(req, res)).catch(next);
+});
+app.post('/api/refresh', (req, res, next) => {
+  Promise.resolve(refreshHandler(req, res)).catch(next);
+});
+app.post('/api/revoke', (req, res, next) => {
+  Promise.resolve(revokeHandler(req, res)).catch(next);
 });
 
 app.use(errorHandlingMiddleware);

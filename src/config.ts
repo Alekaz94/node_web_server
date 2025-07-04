@@ -18,7 +18,9 @@ type DBConfig = {
 };
 
 type JWTConfig = {
+  defaultDuration: number;
   secret: string;
+  issuer: string;
 };
 
 process.loadEnvFile();
@@ -47,6 +49,8 @@ export const config: Config = {
     migrationConfig: migrationConfig,
   },
   jwt: {
-    secret: envOrThrow('SECRET'),
+    defaultDuration: 60 * 60,
+    secret: envOrThrow('JWT_SECRET'),
+    issuer: 'chirpy',
   },
 };

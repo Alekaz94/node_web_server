@@ -2,17 +2,30 @@ import { Request, Response } from 'express';
 import { BadRequestError } from '../errorhandling/BadRequestError.js';
 import { createChirp } from '../../db/queries/chirps.js';
 import { JSONResponse } from '../jsonResponse.js';
+import { getBearerToken, validateJWT } from '../authentication/auth.js';
+import { config } from '../../config.js';
+import { UnauthorizedError } from '../errorhandling/UnauthorizedError.js';
 
 export async function createChirpHandler(req: Request, res: Response) {
   type parameters = {
     body: string;
-    userId: string;
   };
-
   const params: parameters = req.body;
 
+  const token = await getBearerToken(req);
+
+  if (!token) {
+    throw new UnauthorizedError('Missing or invalid bearer token.');
+  }
+
+  const userId = await validateJWT(token, config.jwt.secret);
+
+  if (!userId) {
+    throw new UnauthorizedError('Missing or invalid bearer token.');
+  }
+
   const cleaned = validateChirp(params.body);
-  const chirp = await createChirp({ body: cleaned, userId: params.userId });
+  const chirp = await createChirp({ body: cleaned, userId: userId });
 
   JSONResponse(res, 201, chirp);
 }
