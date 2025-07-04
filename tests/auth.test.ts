@@ -53,7 +53,7 @@ describe('Password Hashing', () => {
     expect(() => validateJWT(token, wrongSecret)).toThrow;
   });
 
-  it('should get token fro header', async () => {
+  it('should get token from header', async () => {
     const token = await makeJWT('abcde', expiresIn, secret);
     const req = {
       headers: {
