@@ -66,5 +66,6 @@ export async function loginHandler(req: Request, res: Response) {
     updatedAt: user.updatedAt,
     token: accessToken,
     refreshToken: hexString,
+    isChirpyRed: user.isChirpyRed,
   } satisfies LoginResponse);
 }

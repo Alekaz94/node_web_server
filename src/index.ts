@@ -11,6 +11,7 @@ import { config } from './config.js';
 import {
   createUserHandler,
   updateUserHandler,
+  updateUserToChirpyRedHandler,
 } from './api/routehandlers/userHandler.js';
 import { resetMetricsHandler } from './api/routehandlers/resetMetricsHandler.js';
 import {
@@ -38,6 +39,10 @@ app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.get('/api/healthz', handlerReadiness);
 app.get('/admin/metrics', metricsHandler);
 app.post('/admin/reset', resetMetricsHandler);
+
+app.post('/api/polka/webhooks', (req, res, next) => {
+  Promise.resolve(updateUserToChirpyRedHandler(req, res)).catch(next);
+});
 
 app.post('/api/users', (req, res, next) => {
   Promise.resolve(createUserHandler(req, res)).catch(next);

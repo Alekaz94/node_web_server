@@ -1,6 +1,6 @@
 import { db } from '../index.js';
 import { chirps, NewChirp } from '../schema.js';
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 
 export async function createChirp(chirp: NewChirp) {
   const [rows] = await db.insert(chirps).values(chirp).returning();
@@ -8,10 +8,28 @@ export async function createChirp(chirp: NewChirp) {
 }
 
 export async function getAllChirps() {
-  const chirp = await db.select().from(chirps).orderBy(asc(chirps.createdAt));
-  return chirp;
+  return await db.select().from(chirps).orderBy(asc(chirps.createdAt));
 }
 
+export async function getAllChirpsDesc() {
+  return await db.select().from(chirps).orderBy(desc(chirps.createdAt));
+}
+
+export async function getAllChirpsByAuthorAsc(authorId: string) {
+  return await db
+    .select()
+    .from(chirps)
+    .where(eq(chirps.userId, authorId))
+    .orderBy(asc(chirps.createdAt));
+}
+
+export async function getAllChirpsByAuthorDesc(authorId: string) {
+  return await db
+    .select()
+    .from(chirps)
+    .where(eq(chirps.userId, authorId))
+    .orderBy(desc(chirps.createdAt));
+}
 export async function getChirpById(chirpId: string) {
   const chirp = await db.select().from(chirps).where(eq(chirps.id, chirpId));
 

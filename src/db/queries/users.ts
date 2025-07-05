@@ -35,3 +35,18 @@ export async function updateUser(id: string, user: NewUser) {
 
   return result;
 }
+
+export async function updateUserToChirpyRed(userId: string) {
+  const now = new Date();
+
+  const [result] = await db
+    .update(users)
+    .set({
+      updatedAt: now,
+      isChirpyRed: true,
+    })
+    .where(eq(users.id, userId))
+    .returning();
+
+  return result;
+}

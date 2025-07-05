@@ -1,11 +1,18 @@
 import { Request, Response } from 'express';
 import { BadRequestError } from '../errorhandling/BadRequestError.js';
 import { createUser, updateUser } from '../../db/queries/users.js';
-import { getBearerToken, hashPassword, validateJWT } from '../authentication/auth.js';
+import {
+  getAPIKey,
+  getBearerToken,
+  hashPassword,
+  validateJWT,
+} from '../authentication/auth.js';
 import { JSONResponse } from '../jsonResponse.js';
 import { NewUser } from '../../db/schema.js';
 import { config } from '../../config.js';
 import { UnauthorizedError } from '../errorhandling/UnauthorizedError.js';
+import { updateUserToChirpyRed } from '../../db/queries/users.js';
+import { NotFoundError } from '../errorhandling/NotFoundError.js';
 
 export type UserResponse = Omit<NewUser, 'hashedPassword'>;
 
@@ -36,6 +43,7 @@ export async function createUserHandler(req: Request, res: Response) {
     email: user.email,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
+    isChirpyRed: user.isChirpyRed,
   } satisfies UserResponse);
 }
 
@@ -74,5 +82,30 @@ export async function updateUserHandler(req: Request, res: Response) {
     email: userToUpdate.email,
     createdAt: userToUpdate.createdAt,
     updatedAt: userToUpdate.updatedAt,
+    isChirpyRed: userToUpdate.isChirpyRed,
   } satisfies UserResponse);
+}
+
+export async function updateUserToChirpyRedHandler(
+  req: Request,
+  res: Response
+) {
+  const { event, data } = req.body;
+  if (event !== 'user.upgraded') {
+    return res.sendStatus(204);
+  }
+
+  const key = await getAPIKey(req);
+
+  if (!key) {
+    throw new UnauthorizedError('You are not authorized!');
+  }
+
+  if (!data?.userId) {
+    throw new NotFoundError('User not found!');
+  }
+
+  await updateUserToChirpyRed(data.userId);
+
+  JSONResponse(res, 204, {});
 }
