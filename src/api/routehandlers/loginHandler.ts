@@ -8,7 +8,7 @@ import {
 import { JSONResponse } from '../jsonResponse.js';
 import { UnauthorizedError } from '../errorhandling/UnauthorizedError.js';
 import { config } from '../../config.js';
-import { UserResponse } from './createUserHandler.js';
+import { UserResponse } from './userHandler.js';
 import { createRefreshToken } from '../../db/queries/refreshTokens.js';
 
 type LoginResponse = UserResponse & {

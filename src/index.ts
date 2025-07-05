@@ -8,13 +8,17 @@ import { middlewareLogResponses } from './api/middleware/middlewareLogResponses.
 import { middlewareMetricsInc } from './api/middleware/middlewareMetricsInc.js';
 import { errorHandlingMiddleware } from './api/middleware/errorHandlingMiddleware.js';
 import { config } from './config.js';
-import { createUserHandler } from './api/routehandlers/createUserHandler.js';
-import { resetMetricsHandler } from './api/routehandlers/resetMetricsHandler.js';
-import { createChirpHandler } from './api/routehandlers/createChirpHandler.js';
 import {
+  createUserHandler,
+  updateUserHandler,
+} from './api/routehandlers/userHandler.js';
+import { resetMetricsHandler } from './api/routehandlers/resetMetricsHandler.js';
+import {
+  createChirpHandler,
+  deleteChirpByIdHandler,
   getAllChirpsHandler,
   getChirpsByIdHandler,
-} from './api/routehandlers/getChirpsHandler.js';
+} from './api/routehandlers/chirpHandler.js';
 import { loginHandler } from './api/routehandlers/loginHandler.js';
 import { refreshHandler } from './api/routehandlers/refreshHandler.js';
 import { revokeHandler } from './api/routehandlers/revokeHandler.js';
@@ -34,8 +38,12 @@ app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.get('/api/healthz', handlerReadiness);
 app.get('/admin/metrics', metricsHandler);
 app.post('/admin/reset', resetMetricsHandler);
+
 app.post('/api/users', (req, res, next) => {
   Promise.resolve(createUserHandler(req, res)).catch(next);
+});
+app.put('/api/users', (req, res, next) => {
+  Promise.resolve(updateUserHandler(req, res)).catch(next);
 });
 
 app.post('/api/chirps', (req, res, next) => {
@@ -47,6 +55,10 @@ app.get('/api/chirps', (req, res, next) => {
 app.get(`/api/chirps/:chirpID`, (req, res, next) => {
   Promise.resolve(getChirpsByIdHandler(req, res)).catch(next);
 });
+app.delete('/api/chirps/:chirpID', (req, res, next) => {
+  Promise.resolve(deleteChirpByIdHandler(req, res)).catch(next);
+});
+
 app.post('/api/login', (req, res, next) => {
   Promise.resolve(loginHandler(req, res)).catch(next);
 });
